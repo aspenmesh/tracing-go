@@ -1,8 +1,9 @@
 ### Configuring tracing in your application
 
 This package can be used to configure tracing in your application which is
-compatible with Istio and Aspen Mesh. It setups up the global opentracing
-tracer which can be used by applications to propragate tracing headers or create
+compatible with Istio and Aspen Mesh.
+It sets the [global opentracing tracer](https://github.com/opentracing/opentracing-go#api-overview-for-those-adding-instrumentation)
+which can be used by applications to propagate tracing headers or create
 new spans.
 
 ```go
