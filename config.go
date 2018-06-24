@@ -112,12 +112,14 @@ func configure(serviceName string, options *Options, nz newZipkin) (io.Closer, e
 		rep = jaeger.NewCompositeReporter(reporters...)
 	}
 
-	// Setup zipkin style tracing
-	zipkinPropagator := zp.NewZipkinB3HTTPHeaderPropagator()
-	injector := jaeger.TracerOptions.Injector(ot.HTTPHeaders, zipkinPropagator)
-	extractor := jaeger.TracerOptions.Extractor(ot.HTTPHeaders, zipkinPropagator)
-	opts := []jaeger.TracerOption{poolSpans, injector, extractor}
-
+	opts := []jaeger.TracerOption{poolSpans}
+	if options.ZipkinURL != "" {
+		// Setup zipkin style tracing
+		zipkinPropagator := zp.NewZipkinB3HTTPHeaderPropagator()
+		injector := jaeger.TracerOptions.Injector(ot.HTTPHeaders, zipkinPropagator)
+		extractor := jaeger.TracerOptions.Extractor(ot.HTTPHeaders, zipkinPropagator)
+		opts = append(opts, injector, extractor)
+	}
 	tracer, closer := jaeger.NewTracer(serviceName, sampler, rep, opts...)
 
 	// NOTE: global side effect!
